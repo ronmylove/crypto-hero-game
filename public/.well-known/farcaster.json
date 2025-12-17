@@ -18,14 +18,16 @@
         "primaryCategory": "games",
         "tags": [
             "game",
-            "story",
+            "rpg",
             "nft",
             "base"
         ],
         "heroImageUrl": "https://crypto-hero-game.vercel.app/icon.png",
         "tagline": "Play and mint NFT on Base",
+        "subtitle": "Epic RPG Adventure",
         "ogTitle": "Crypto Hero Game",
-        "ogDescription": "Complete your hero's journey and mint a unique NFT",
-        "ogImageUrl": "https://crypto-hero-game.vercel.app/icon.png"
+        "ogDescription": "Complete the journey and mint a unique NFT.",
+        "ogImageUrl": "https://crypto-hero-game.vercel.app/icon.png",
+        "noindex": false
     }
 }
