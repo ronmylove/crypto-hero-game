@@ -1,27 +1,28 @@
 // src/app/layout.js
-
-// Стандартные метаданные для браузера и соцсетей
 export const metadata = {
   title: 'Crypto Hero Game',
-  description: 'Web3 Mini App Game on Base',
+  description: 'An interactive Web3 story with NFT rewards on Base network.',
   openGraph: {
     title: 'Crypto Hero Game',
-    description: 'Web3 Mini App Game on Base',
-    images: ['https://emerald-generous-crayfish-384.mypinata.cloud/ipfs/bafybeifsgu45vyiviwou3rzqsmjr73aci7x3dlbs4p5v5axdtksicq4h6q'],
+    description: 'An interactive Web3 story with NFT rewards on Base network.',
+    images: ['https://crypto-hero-game.vercel.app/icon.png'],
   },
-  // 🔹 Тот самый обязательный раздел для Farcaster
   other: {
-    'fc:frame': JSON.stringify({
+    // ID для верификации (из твоего скриншота image_953dd5.png)
+    "base:app_id": "6942e039d19763ca26ddc3a5",
+
+    // Конфигурация Mini App
+    "fc:miniapp": JSON.stringify({
       version: "next",
-      imageUrl: "https://emerald-generous-crayfish-384.mypinata.cloud/ipfs/bafybeifsgu45vyiviwou3rzqsmjr73aci7x3dlbs4p5v5axdtksicq4h6q",
+      imageUrl: "https://crypto-hero-game.vercel.app/icon.png",
       button: {
-        title: "Play Adventure 🚀",
+        title: "Play Crypto Hero",
         action: {
-          type: "launch_frame",
+          type: "launch_miniapp",
           name: "Crypto Hero Game",
-          url: "https://tran-unactinic-muscly.ngrok-free.dev",
-          splashImageUrl: "https://emerald-generous-crayfish-384.mypinata.cloud/ipfs/bafybeifsgu45vyiviwou3rzqsmjr73aci7x3dlbs4p5v5axdtksicq4h6q",
-          splashBackgroundColor: "#1F2233"
+          url: "https://crypto-hero-game.vercel.app",
+          splashImageUrl: "https://crypto-hero-game.vercel.app/icon.png",
+          splashBackgroundColor: "#000000"
         }
       }
     }),
@@ -30,14 +31,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="ru">
+    <html lang="en">
       <head>
-        {/* Это гарантирует, что стили будут отображаться корректно на мобильных устройствах */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        {/* 🔹 Подключаем скрипт SDK для корректной работы Mini App */}
-        <script src="https://cdn.jsdelivr.net/npm/@farcaster/miniapp-sdk@latest/dist/index.min.js"></script>
       </head>
-      {/* 🔹 Добавлен suppressHydrationWarning чтобы расширения браузера не вызывали ошибку */}
       <body suppressHydrationWarning>
         {children}
       </body>
