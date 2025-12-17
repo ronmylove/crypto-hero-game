@@ -11,10 +11,10 @@
         "iconUrl": "https://crypto-hero-game.vercel.app/icon.png",
         "splashImageUrl": "https://crypto-hero-game.vercel.app/icon.png",
         "splashBackgroundColor": "#000000",
+        "noindex": false,
+        "tagline": "Play and mint NFT on Base",
+        "subtitle": "Epic RPG Adventure",
         "description": "An interactive Web3 story with NFT rewards on Base network.",
-        "screenshotUrls": [
-            "https://crypto-hero-game.vercel.app/icon.png"
-        ],
         "primaryCategory": "games",
         "tags": [
             "game",
@@ -23,11 +23,12 @@
             "base"
         ],
         "heroImageUrl": "https://crypto-hero-game.vercel.app/icon.png",
-        "tagline": "Play and mint NFT on Base",
-        "subtitle": "Epic RPG Adventure",
+        "webhookUrl": "",
+        "screenshotUrls": [
+            "https://crypto-hero-game.vercel.app/icon.png"
+        ],
         "ogTitle": "Crypto Hero Game",
         "ogDescription": "Complete the journey and mint a unique NFT.",
-        "ogImageUrl": "https://crypto-hero-game.vercel.app/icon.png",
-        "noindex": false
+        "ogImageUrl": "https://crypto-hero-game.vercel.app/icon.png"
     }
 }
