@@ -11,7 +11,7 @@
         "iconUrl": "https://crypto-hero-game.vercel.app/icon.png",
         "splashImageUrl": "https://crypto-hero-game.vercel.app/icon.png",
         "splashBackgroundColor": "#000000",
-        "description": "Интерактивная Web3 история с NFT наградой на Base",
+        "description": "An interactive Web3 story with NFT rewards on Base network.",
         "screenshotUrls": [
             "https://crypto-hero-game.vercel.app/icon.png"
         ],
@@ -23,9 +23,9 @@
             "base"
         ],
         "heroImageUrl": "https://crypto-hero-game.vercel.app/icon.png",
-        "tagline": "Играй и забирай награду в сети Base",
+        "tagline": "Play and claim your reward on Base",
         "ogTitle": "Crypto Hero Game",
-        "ogDescription": "Пройди путь героя и получи уникальный NFT",
+        "ogDescription": "Complete your hero's journey and mint a unique NFT",
         "ogImageUrl": "https://crypto-hero-game.vercel.app/icon.png"
     }
 }
