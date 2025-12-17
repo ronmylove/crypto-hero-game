@@ -1,0 +1,23 @@
+{
+    "accountAssociation": {
+        "header": "",
+        "payload": "",
+        "signature": ""
+    },
+    "miniapp": {
+        "version": "1",
+        "name": "Crypto Hero Game",
+        "description": "Интерактивная Web3 история с NFT наградой",
+        "iconUrl": "https://crypto-hero-game.vercel.app/icon.png",
+        "homeUrl": "https://crypto-hero-game.vercel.app",
+        "canonicalDomain": "crypto-hero-game.vercel.app",
+        "requiredChains": [
+            "eip155:8453"
+        ],
+        "tags": [
+            "game",
+            "story",
+            "nft"
+        ]
+    }
+}
