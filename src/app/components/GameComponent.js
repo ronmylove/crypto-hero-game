@@ -15,13 +15,13 @@ const COLORS = {
 // 🔹 ТВОИ ДАННЫЕ (ПРОВЕРЕНО)
 const CONTRACT_ADDRESS = '0xB726E3893eA0B6D13309Cf2E4f02513c32EC64Bf';
 const MINT_FUNCTION_SIGNATURE = '0x1249c58b'; // Селектор функции mint()
-const MINT_VALUE = '0x0';
+const MINT_VALUE = '0'; // Для SDK лучше передавать строку без 0x, если это 0
 
 export default function GameComponent() {
     const [currentScene, setCurrentScene] = useState('1');
     const [fid, setFid] = useState(null);
     const [mintStatus, setMintStatus] = useState('idle'); // idle | pending | success | error
-    const [isMounted, setIsMounted] = useState(false); // 🔹 ДОБАВЛЕНО ДЛЯ ИСПРАВЛЕНИЯ ГИДРАТАЦИИ
+    const [isMounted, setIsMounted] = useState(false);
 
     const audioRef = useRef(null);
     const clickRef = useRef(null);
@@ -31,28 +31,25 @@ export default function GameComponent() {
         async function init() {
             try {
                 await sdk.init();
-                // 🔹 ВОТ ЭТА СТРОКА ВКЛЮЧАЕТ ОТОБРАЖЕНИЕ ПРИЛОЖЕНИЯ
                 sdk.actions.ready();
-
                 const ctx = await sdk.getFarcasterContext();
                 setFid(ctx?.fid || 'TEST_USER');
-            } catch {
-                // Если ошибка инициализации, всё равно помечаем как "ready", чтобы увидеть интерфейс
+            } catch (e) {
+                console.error("SDK Init Error", e);
                 sdk.actions.ready();
                 setFid('TEST_USER');
             } finally {
-                setIsMounted(true); // 🔹 ДОБАВЛЕНО: КОМПОНЕНТ ГИДРИРОВАН
+                setIsMounted(true);
             }
         }
         init();
     }, []);
 
-    // 🔹 ОБНОВЛЕННАЯ AUDIO LOGIC (ПО АКTAM)
+    // 🔹 AUDIO LOGIC
     useEffect(() => {
         const scene = STORY_NODES[currentScene];
-        if (!scene) return;
+        if (!scene || !isMounted) return;
 
-        // Инициализация плеера
         if (!audioRef.current) {
             audioRef.current = new Audio();
             audioRef.current.loop = true;
@@ -63,34 +60,24 @@ export default function GameComponent() {
         const targetAudio = scene.audio;
 
         if (targetAudio) {
-            // Проверяем, отличается ли новый звук от текущего
-            // Используем getAttribute('src') для сравнения относительных путей
             if (player.getAttribute('src') !== targetAudio) {
                 player.pause();
                 player.src = targetAudio;
                 player.load();
-                player.play().catch(() => {
-                    console.log("Ожидание клика пользователя для запуска аудио");
-                });
-            } else {
-                // Если звук тот же, но почему-то на паузе — запускаем
-                if (player.paused) {
-                    player.play().catch(() => { });
-                }
+                player.play().catch(() => { });
+            } else if (player.paused) {
+                player.play().catch(() => { });
             }
         } else {
             player.pause();
             player.removeAttribute('src');
         }
 
-        // Инициализация звука клика
         if (!clickRef.current) {
             clickRef.current = new Audio('/audio/click.mp3');
             clickRef.current.volume = 0.4;
         }
-
-        // Внимание: мы убрали return cleanup с паузой, чтобы музыка не прерывалась при смене сцен
-    }, [currentScene]);
+    }, [currentScene, isMounted]);
 
     const handleChoice = (next) => {
         if (clickRef.current) {
@@ -100,30 +87,36 @@ export default function GameComponent() {
         setCurrentScene(next);
     };
 
-    // 🔹 ФУНКЦИЯ МИНТА
+    // 🔹 ИСПРАВЛЕННАЯ ФУНКЦИЯ МИНТА
     const handleMint = async () => {
         setMintStatus('pending');
 
         try {
-            await sdk.sendTransaction({
+            // Используем sdk.actions.sendTransaction (правильный метод для Mini Apps)
+            const result = await sdk.actions.sendTransaction({
+                chainId: 8453, // Явно указываем Base Mainnet
                 to: CONTRACT_ADDRESS,
                 data: MINT_FUNCTION_SIGNATURE,
                 value: MINT_VALUE,
             });
 
+            console.log("Transaction sent:", result);
             setMintStatus('success');
-            // После успешного минта перекидываем на экран триумфа
-            setCurrentScene('21');
+            setCurrentScene('21'); // Переход на экран успеха
         } catch (e) {
-            console.error("Mint Error:", e);
+            console.error("Mint Error Details:", e);
+
+            // Выводим ошибку алертом, чтобы понять причину на мобильном
+            const errorMsg = e.message || "Unknown error";
+            alert(`Mint Error: ${errorMsg}`);
+
             setMintStatus('error');
         }
     };
 
-    // 🔹 ИСПРАВЛЕНО: ЖДЕМ МОНТИРОВАНИЯ И FID
     if (!isMounted || !fid) {
         return (
-            <div style={styles.loading} suppressHydrationWarning>
+            <div style={styles.loading}>
                 Loading Web3 Adventure...
             </div>
         );
@@ -133,20 +126,16 @@ export default function GameComponent() {
     if (!scene) return null;
 
     return (
-        <div style={styles.container} suppressHydrationWarning>
-
-            {/* ИЗОБРАЖЕНИЕ СЦЕНЫ */}
+        <div style={styles.container}>
             {scene.image && (
                 <div style={styles.imageWrapper}>
                     <img src={scene.image} alt="Story visual" style={styles.image} />
                 </div>
             )}
 
-            {/* НИЖНЯЯ ПАНЕЛЬ С ТЕКСТОМ И КНОПКАМИ */}
             <div style={styles.panel}>
                 <p style={styles.text}>{scene.text}</p>
 
-                {/* ОБЫЧНЫЕ КНОПКИ ИЗ STORY_NODES */}
                 {scene.choices?.map((choice, i) => (
                     <button
                         key={i}
@@ -158,7 +147,6 @@ export default function GameComponent() {
                     </button>
                 ))}
 
-                {/* 🔹 АККУРАТНАЯ КНОПКА MINT (ПОЯВЛЯЕТСЯ ТОЛЬКО НА СЦЕНЕ 20) */}
                 {currentScene === '20' && mintStatus !== 'success' && (
                     <button
                         onClick={handleMint}
@@ -169,10 +157,9 @@ export default function GameComponent() {
                     </button>
                 )}
 
-                {/* ИНДИКАЦИЯ ОШИБКИ */}
                 {mintStatus === 'error' && (
                     <p style={styles.errorText}>
-                        Something went wrong. Do you have enough ETH for gas?
+                        Something went wrong. Check your Base ETH balance or try again.
                     </p>
                 )}
             </div>
